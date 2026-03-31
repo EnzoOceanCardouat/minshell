@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse_input.c                                      :+:      :+:    :+:   */
+/*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ecardoua <ecardoua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 15:39:14 by thcotza           #+#    #+#             */
-/*   Updated: 2026/03/26 13:50:50 by ecardoua         ###   ########.fr       */
+/*   Updated: 2026/03/31 17:20:33 by ecardoua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,7 @@ void	d_less_tokenization(t_token **token, int *i)
 	(*i) += 2;
 }
 
-bool	tokenization(char *args, t_token **tok)
+bool	lexer(char *args, t_token **tok)
 {
 	t_token	*token;
 	int		i;
@@ -176,11 +176,51 @@ bool	tokenization(char *args, t_token **tok)
 	return (false);
 }
 
-bool	parse_input(t_data *data, t_token **token)
+bool	expender(t_token **token)
+{
+	int	i;
+
+	i = -1;
+	while ((*token))
+	{
+		while ((*token)->value[++i])
+		{
+			if ((*token)->value[i] == '\'')
+				break ;
+			else
+			{
+				if ((*token)->value[i] == '$')
+				{
+					if (ft_isdigit((int)(*token)->value[i + 1]) == 1)
+						ft_strdup("faire jsp");
+				}
+			}
+		}
+	}
+	if (ft_isdigit((*token)->value) == 1)
+	{
+		(*token)->value = ft_strdup("");
+		return ;
+	}
+	else
+	{
+		(*token)->value = ft_strdup("stand by");
+	}
+	return (false);
+}
+
+// open quand rediction et save le fd avec un int fd dans sruct
+
+bool	parse_input(t_data *data, t_token **token, t_cmd **cmd)
 {
 	if (!(*token))
 		return (true);
-	if (tokenization(data->input, token))
+	if (lexer(data->input, token))
 		return (true);
+	// if (expender(token))
+	// 	return (true);
+	if (parser(*token, cmd))
+		return (true);
+	printf("cmd:%s, args:%s, append:%d, outfile:%s, infile:%s\n", (*cmd)->cmd, (*cmd)->args, (*cmd)->append, (*cmd)->outfile, (*cmd)->infile);
 	return (false);
 }
