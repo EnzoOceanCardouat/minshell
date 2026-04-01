@@ -6,7 +6,7 @@
 /*   By: ecardoua <ecardoua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 16:16:23 by thcotza           #+#    #+#             */
-/*   Updated: 2026/03/30 13:11:32 by ecardoua         ###   ########.fr       */
+/*   Updated: 2026/04/01 14:57:39 by ecardoua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,40 +83,44 @@ void    search_path(char *command, t_data *data)
 	ft_free_split(data->paths);
 }
 
-void verif_redirection(t_token *token, t_data *data)
-{
-	while (token && token->next)
-	{
-		if (token->type == MORE || token->type == D_MORE)
-		{
-			if (token->next->type == WORD)
-			{
-				if (token->type == MORE)
-				{
-					data->fd = open((const char *)token->next->value, O_TRUNC);
-					close(data->fd);
-					data->fd = open((const char *)token->next->value, O_RDWR);
-				}
-				else
-					data->fd = open((const char *)token->next->value, O_WRONLY | O_APPEND);
-			}
-		}
-		token = token->next;
-	}
-}
+// void verif_redirection(t_token *token, t_data *data)
+// {
+// 	while (token && token->next)
+// 	{
+// 		if (token->type == MORE || token->type == D_MORE)
+// 		{
+// 			if (token->next->type == WORD)
+// 			{
+// 				if (token->type == MORE)
+// 				{
+// 					data->fd = open((const char *)token->next->value, O_TRUNC);
+// 					close(data->fd);
+// 					data->fd = open((const char *)token->next->value, O_RDWR);
+// 				}
+// 				else
+// 					data->fd = open((const char *)token->next->value, O_WRONLY | O_APPEND);
+// 			}
+// 		}
+// 		token = token->next;
+// 	}
+// }
 
 void	manage_commands(t_token *token, t_data *data)
 {
 	t_token	*token_cpy;
 
 	token_cpy = token;
-	verif_redirection(token_cpy, data);
+	//verif_redirection(token_cpy, data);
 	while (token && token->next)
 	{
 		if (token->type == WORD)
 		{
 			if (ft_strcmp(token->value, "echo") == 0)
-				ft_echo(&token, data);
+			{
+				//ft_echo(&token, data);
+				printf("echo\n");
+				close(data->fd_in);
+			}
 			else if (ft_strcmp(token->value, "cd") == 0)
 				ft_cd(&token);
 			else if (ft_strcmp(token->value, "pwd") == 0)

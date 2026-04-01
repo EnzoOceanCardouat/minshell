@@ -6,7 +6,7 @@
 /*   By: ecardoua <ecardoua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 15:08:44 by thcotza           #+#    #+#             */
-/*   Updated: 2026/03/31 15:09:53 by ecardoua         ###   ########.fr       */
+/*   Updated: 2026/04/01 13:51:43 by ecardoua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,15 +27,16 @@
 typedef struct s_data
 {
 	char	*input;
-	char    *path;
-    char    **paths;
-    int        i;
-    char    *full_path;
-    char    **cmd;
-    int     id;
-	char    **env_cpy;
+	char	*path;
+	char	**paths;
+	int		i;
+	char	*full_path;
+	char	**cmd;
+	int		id;
+	char	**env_cpy;
 	char	*command;
-	int		fd;
+	int		fd_in;
+	int		fd_out;
 	int		verif;
 }			t_data;
 
@@ -47,7 +48,7 @@ typedef enum e_token
 	D_LESS,
 	D_MORE,
 	PIPE,
-}		t_type;
+}	t_type;
 
 typedef struct s_token
 {
@@ -65,7 +66,7 @@ typedef struct s_token
 typedef struct s_cmd
 {
 	char			*cmd;
-	char			*args;
+	char			**args;
 	char			*infile;
 	char			*outfile;
 	t_type			append;

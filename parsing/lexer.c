@@ -6,7 +6,7 @@
 /*   By: ecardoua <ecardoua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 15:39:14 by thcotza           #+#    #+#             */
-/*   Updated: 2026/03/31 17:20:33 by ecardoua         ###   ########.fr       */
+/*   Updated: 2026/04/01 16:00:56 by ecardoua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	word_tokenizer(char *args, t_token **token, int *i)
 	char	*tmp;
 
 	word = ft_strdup("");
-	while (args[*i] && args[*i] != '<' && args[*i] != '>' && args[*i] != '|' && args[*i] != ' ' && args[*i] != '"')
+	while (args[*i] && args[*i] != '<' && args[*i] != '>' && args[*i] != '|' && args[*i] != ' ' && args[*i] != '"' && args[*i] != '\'')
 	{
 		tmp = ft_strdup(word);
 		word = ft_strcharjoin(tmp, args[*i]);
@@ -27,7 +27,7 @@ void	word_tokenizer(char *args, t_token **token, int *i)
 	}
 	(*token)->value = word;
 	(*token)->type = WORD;
-	printf("token type: %d, token value: %s, len: %zu, i: %d\n", (*token)->type, (*token)->value, ft_strlen((*token)->value), *i);
+	//printf("token type: %d, token value: %s, len: %zu, i: %d\n", (*token)->type, (*token)->value, ft_strlen((*token)->value), *i);
 	(*token)->next = malloc(sizeof(t_token));
 	*token = (*token)->next;
 	(*token)->next = NULL;
@@ -58,7 +58,7 @@ void	d_quote_tokenizer(char *args, t_token **token, int *i)
 	}
 	(*token)->value = d_quote;
 	(*token)->type = WORD;
-	printf("token type: %d, token value: %s, len: %zu, i: %d\n", (*token)->type, (*token)->value, ft_strlen((*token)->value), *i);
+	//printf("token type: %d, token value: %s, len: %zu, i: %d\n", (*token)->type, (*token)->value, ft_strlen((*token)->value), *i);
 	(*token)->next = malloc(sizeof(t_token));
 	*token = (*token)->next;
 	(*token)->next = NULL;
@@ -89,41 +89,43 @@ void	s_quote_tokenizer(char *args, t_token **token, int *i)
 	}
 	(*token)->value = d_quote;
 	(*token)->type = WORD;
-	printf("token type: %d, token value: %s, len: %zu, i: %d\n", (*token)->type, (*token)->value, ft_strlen((*token)->value), *i);
+	//printf("token type: %d, token value: %s, len: %zu, i: %d\n", (*token)->type, (*token)->value, ft_strlen((*token)->value), *i);
 	(*token)->next = malloc(sizeof(t_token));
 	*token = (*token)->next;
 	(*token)->next = NULL;
 	(*token)->value = NULL;
 }
 
-void	d_more_tokenization(t_token **token, int *i)
-{
-	(*token)->value = ft_strdup(">>");
-	(*token)->type = D_MORE;
-	printf("token type: %d, token value: %s, i: %d\n", (*token)->type, (*token)->value, *i);
-	(*token)->next = malloc(sizeof(t_token));
-	(*token) = (*token)->next;
-	(*token)->next = NULL;
-	(*token)->value = NULL;
-	(*i) += 2;
-}
+// void	d_more_tokenization(t_token **token, int *i)
+// {
+// 	(*token)->value = ft_strdup(">>");
+// 	(*token)->type = D_MORE;
+// 	printf("token type: %d, token value: %s, i: %d\n", (*token)->type, (*token)->value, *i);
+// 	(*token)->next = malloc(sizeof(t_token));
+// 	(*token) = (*token)->next;
+// 	(*token)->next = NULL;
+// 	(*token)->value = NULL;
+// 	(*i) += 2;
+// }
 
-void	d_less_tokenization(t_token **token, int *i)
-{
-	(*token)->value = ft_strdup("<<");
-	(*token)->type = D_LESS;
-	printf("token type: %d, token value: %s, i: %d\n", (*token)->type, (*token)->value, *i);
-	(*token)->next = malloc(sizeof(t_token));
-	(*token) = (*token)->next;
-	(*token)->next = NULL;
-	(*token)->value = NULL;
-	(*i) += 2;
-}
+// void	d_less_tokenization(t_token **token, int *i)
+// {
+// 	(*token)->value = ft_strdup("<<");
+// 	(*token)->type = D_LESS;
+// 	printf("token type: %d, token value: %s, i: %d\n", (*token)->type, (*token)->value, *i);
+// 	(*token)->next = malloc(sizeof(t_token));
+// 	(*token) = (*token)->next;
+// 	(*token)->next = NULL;
+// 	(*token)->value = NULL;
+// 	(*i) += 2;
+// }
 
-bool	lexer(char *args, t_token **tok)
+bool	lexer(char *args, t_token **tok, t_data **data)
 {
 	t_token	*token;
 	int		i;
+	char	*word;
+	char	*tmp;
 
 	token = *tok;
 	i = 0;
@@ -131,18 +133,44 @@ bool	lexer(char *args, t_token **tok)
 	{
 		if (args[i] == '>' && args[i + 1] == '>')
 		{
-			d_more_tokenization(&token, &i);
+			if ((*data)->fd_out > 0)
+				close((*data)->fd_out);
+			i += 2;
+			word = ft_strdup("");
+			while (args[i] && args[i] != '<' && args[i] != '>' && args[i] != '|' && args[i] != ' ' && args[i] != '"' && args[i] != '\'')
+			{
+				tmp = ft_strdup(word);
+				word = ft_strcharjoin(tmp, args[i]);
+				free(tmp);
+				i++;
+			}
+			printf("file name:%s\n", word);
+			free(word);
+			//(*data)->fd_out = open(word, O_CREAT, O_RDONLY, 0644);
 			continue ;
 		}
 		else if (args[i] == '<' && args[i + 1] == '<')
 		{
-			d_less_tokenization(&token, &i);
+			ft_strdup("stand by here docs");
+			i += 2;
 			continue ;
 		}
 		else if (args[i] == '<')
-			token->type = LESS;
+		{
+			if ((*data)->fd_in < 0)
+				close((*data)->fd_in);
+			(*data)->fd_in = open(token->value, O_RDONLY, 0644);
+			i++;
+			continue ;
+		}
 		else if (args[i] == '>')
-			token->type = MORE;
+		{
+			if ((*data)->fd_out < 0)
+				close((*data)->fd_out);
+			(*data)->fd_out = open(token->value, O_CREAT, O_RDWR);
+			i++;
+			continue ;
+		}
 		else if (args[i] == '|')
 			token->type = PIPE;
 		else if (args[i] == ' ' || args[i] == 9)
@@ -166,7 +194,7 @@ bool	lexer(char *args, t_token **tok)
 			continue ;
 		}
 		token->value = ft_strcharjoin("", args[i]);
-		printf("token type: %d, token value: %s, len: %zu, i: %d\n", token->type, token->value, ft_strlen(token->value), i);
+		//printf("token type: %d, token value: %s, len: %zu, i: %d\n", token->type, token->value, ft_strlen(token->value), i);
 		token->next = malloc(sizeof(t_token));
 		token= token->next;
 		token->next = NULL;
@@ -176,51 +204,56 @@ bool	lexer(char *args, t_token **tok)
 	return (false);
 }
 
-bool	expender(t_token **token)
-{
-	int	i;
+// bool	expender(t_token **token)
+// {
+// 	int	i;
 
-	i = -1;
-	while ((*token))
-	{
-		while ((*token)->value[++i])
-		{
-			if ((*token)->value[i] == '\'')
-				break ;
-			else
-			{
-				if ((*token)->value[i] == '$')
-				{
-					if (ft_isdigit((int)(*token)->value[i + 1]) == 1)
-						ft_strdup("faire jsp");
-				}
-			}
-		}
-	}
-	if (ft_isdigit((*token)->value) == 1)
-	{
-		(*token)->value = ft_strdup("");
-		return ;
-	}
-	else
-	{
-		(*token)->value = ft_strdup("stand by");
-	}
-	return (false);
-}
+// 	i = -1;
+// 	while ((*token))
+// 	{
+// 		while ((*token)->value[++i])
+// 		{
+// 			if ((*token)->value[i] == '\'')
+// 				break ;
+// 			else
+// 			{
+// 				if ((*token)->value[i] == '$')
+// 				{
+// 					if (ft_isdigit((int)(*token)->value[i + 1]) == 1)
+// 						ft_strdup("faire jsp");
+// 				}
+// 			}
+// 		}
+// 	}
+// 	if (ft_isdigit((*token)->value) == 1)
+// 	{
+// 		(*token)->value = ft_strdup("");
+// 		return ;
+// 	}
+// 	else
+// 	{
+// 		(*token)->value = ft_strdup("stand by");
+// 	}
+// 	return (false);
+// }
 
 // open quand rediction et save le fd avec un int fd dans sruct
 
 bool	parse_input(t_data *data, t_token **token, t_cmd **cmd)
 {
+	int	i;
+
+	i = 0;
 	if (!(*token))
 		return (true);
-	if (lexer(data->input, token))
+	if (lexer(data->input, token, &data))
 		return (true);
 	// if (expender(token))
 	// 	return (true);
 	if (parser(*token, cmd))
 		return (true);
-	printf("cmd:%s, args:%s, append:%d, outfile:%s, infile:%s\n", (*cmd)->cmd, (*cmd)->args, (*cmd)->append, (*cmd)->outfile, (*cmd)->infile);
+	printf("cmd:%s, append:%d, outfile:%s, infile:%s\n", (*cmd)->cmd, (*cmd)->append, (*cmd)->outfile, (*cmd)->infile);
+	while ((*cmd)->args)
+		printf("args:%s\n", (*cmd)->args[i++]);
 	return (false);
 }
