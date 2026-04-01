@@ -6,7 +6,7 @@
 /*   By: ecardoua <ecardoua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 15:39:14 by thcotza           #+#    #+#             */
-/*   Updated: 2026/04/01 16:00:56 by ecardoua         ###   ########.fr       */
+/*   Updated: 2026/04/01 17:42:30 by ecardoua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,9 +144,8 @@ bool	lexer(char *args, t_token **tok, t_data **data)
 				free(tmp);
 				i++;
 			}
-			printf("file name:%s\n", word);
+			(*data)->fd_out = open(word, O_CREAT | O_WRONLY, 0644);
 			free(word);
-			//(*data)->fd_out = open(word, O_CREAT, O_RDONLY, 0644);
 			continue ;
 		}
 		else if (args[i] == '<' && args[i + 1] == '<')
@@ -167,7 +166,7 @@ bool	lexer(char *args, t_token **tok, t_data **data)
 		{
 			if ((*data)->fd_out < 0)
 				close((*data)->fd_out);
-			(*data)->fd_out = open(token->value, O_CREAT, O_RDWR);
+			(*data)->fd_out = open(word, O_CREAT, O_WRONLY, 0644);
 			i++;
 			continue ;
 		}
@@ -253,7 +252,7 @@ bool	parse_input(t_data *data, t_token **token, t_cmd **cmd)
 	if (parser(*token, cmd))
 		return (true);
 	printf("cmd:%s, append:%d, outfile:%s, infile:%s\n", (*cmd)->cmd, (*cmd)->append, (*cmd)->outfile, (*cmd)->infile);
-	while ((*cmd)->args)
+	while ((*cmd)->args[i])
 		printf("args:%s\n", (*cmd)->args[i++]);
 	return (false);
 }
