@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ecardoua <ecardoua@student.42.fr>          +#+  +:+       +#+        */
+/*   By: thcotza <thcotza@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 14:30:50 by thcotza           #+#    #+#             */
-/*   Updated: 2026/03/31 17:09:04 by ecardoua         ###   ########.fr       */
+/*   Updated: 2026/04/02 16:05:02 by thcotza          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,8 @@ int	main(int argc, char **argv, char **envp)
 {
 	t_data	data;
 	t_token	*token;
-	t_token	*head;
 	t_cmd	*cmd;
+	t_cmd	*head;
 
 	(void)argc;
 	(void)argv;
@@ -43,13 +43,12 @@ int	main(int argc, char **argv, char **envp)
 	token = malloc(sizeof(t_token));
 	token->next = NULL;
 	token->value = NULL;
-	head = token;
 	cmd = malloc(sizeof(t_cmd));
 	cmd->next = NULL;
-	cmd->args = ft_strdup("");
-	cmd->infile = NULL;
-	cmd->outfile = NULL;
+	data.fd_in = -1;
+	data.fd_out = -1;
 	data.env_cpy = ft_dup_env(envp);
+	head = cmd;
 	signal(SIGINT, handle_sigint);
 	signal(SIGQUIT, handle_sigquit);
 	write(1, "\033[32m        _       _     _          _ _\n\033[36m  /\\/\\ (_)_ __ (_)___| |__   ___| | |\n\033[33m /    \\| | '_ \\| / __| '_ \\ / _ \\ | |\n\033[35m/ /\\/\\ \\ | | | | \\__ \\ | | |  __/ | |\n\033[31m\\/    \\/_|_| |_|_|___/_| |_|\\___|_|_|\033[0m\n\n\n", 221);
