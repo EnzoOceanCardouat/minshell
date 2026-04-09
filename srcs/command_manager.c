@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command_manager.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ecardoua <ecardoua@student.42.fr>          +#+  +:+       +#+        */
+/*   By: thcotza <thcotza@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 16:16:23 by thcotza           #+#    #+#             */
-/*   Updated: 2026/04/01 14:57:39 by ecardoua         ###   ########.fr       */
+/*   Updated: 2026/04/08 14:07:53 by thcotza          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ static void	ft_free_split(char **split)
 	free(split);
 }
 
-void    search_path(char *command, t_data *data)
+void	search_path(char *command, t_data *data)
 {
 	data->command = ft_strdup(command);
 	while (*data->env_cpy)
@@ -105,37 +105,31 @@ void    search_path(char *command, t_data *data)
 // 	}
 // }
 
-void	manage_commands(t_token *token, t_data *data)
+void	manage_commands(t_cmd *cmd, t_data *data)
 {
-	t_token	*token_cpy;
-
-	token_cpy = token;
 	//verif_redirection(token_cpy, data);
-	while (token && token->next)
+    data->env_list = char_to_ll(data->env_cpy);
+	while (cmd)
 	{
-		if (token->type == WORD)
+		if (cmd->cmd)
 		{
-			if (ft_strcmp(token->value, "echo") == 0)
-			{
-				//ft_echo(&token, data);
-				printf("echo\n");
-				close(data->fd_in);
-			}
-			else if (ft_strcmp(token->value, "cd") == 0)
-				ft_cd(&token);
-			else if (ft_strcmp(token->value, "pwd") == 0)
+			if (ft_strcmp(cmd->cmd, "echo") == 0)
+				ft_echo(&cmd, data);
+			else if (ft_strcmp(cmd->cmd, "cd") == 0)
+				ft_cd(&cmd);
+			else if (ft_strcmp(cmd->cmd, "pwd") == 0)
 				ft_pwd(data);
-			else if (ft_strcmp(token->value, "export") == 0)
-				ft_export(data, &token);
-			else if (ft_strcmp(token->value, "unset") == 0)
-				ft_unset(data, &token);
-			else if (ft_strcmp(token->value, "env") == 0)
+			else if (ft_strcmp(cmd->cmd, "export") == 0)
+				ft_export(data, &cmd);
+			else if (ft_strcmp(cmd->cmd, "unset") == 0)
+				ft_unset(data, &cmd);
+			else if (ft_strcmp(cmd->cmd, "env") == 0)
 				ft_env(data);
-			else if (ft_strcmp(token->value, "exit") == 0)
+			else if (ft_strcmp(cmd->cmd, "exit") == 0)
 				ft_exit(data);
 			else
-				search_path(token->value, data);
+				search_path(cmd->cmd, data);
 		}
-		token = token->next;
+		cmd = cmd->next;
 	}
 }

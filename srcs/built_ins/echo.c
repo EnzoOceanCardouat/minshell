@@ -3,50 +3,53 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ecardoua <ecardoua@student.42.fr>          +#+  +:+       +#+        */
+/*   By: thcotza <thcotza@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/21 21:14:17 by thcotza           #+#    #+#             */
-/*   Updated: 2026/04/01 14:11:34 by ecardoua         ###   ########.fr       */
+/*   Updated: 2026/04/02 17:44:37 by thcotza          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void	write_word_fd(int fd, t_token **token)
+void	write_word_fd(int fd, t_cmd **cmd)
 {
-	while ((*token) && (*token)->next && (*token)->type == WORD)
+	int	i;
+
+	i = 0;
+	while ((*cmd)->args[i])
 	{
-		ft_putstr_fd((*token)->value, fd);
-		if ((*token)->next->next)
+		ft_putstr_fd((*cmd)->args[i], fd);
+		if ((*cmd)->args[i + 1])
 			write(fd, " ", 1);
-		(*token) = (*token)->next;
+		i++;
 	}
 }
 
-void	ft_echo_file(t_token **token, t_data *data)
+void	ft_echo_file(t_cmd **cmd, t_data *data)
 {
-	(*token) = (*token)->next;
-	write_word_fd(data->fd_in, token);
-	if ((*token)->type == D_MORE || (*token)->type == MORE)
+	if (data->fd_out > -1)
 	{
-		(*token) = (*token)->next;
-		if ((*token)->next)
-			(*token) = (*token)->next;
-		write_word_fd(data->fd_in, token);
+		write_word_fd(data->fd_out, cmd);
+		close(data->fd_out);
+	}
+	else if (data->fd_in > -1)
+	{
+		write_word_fd(data->fd_in, cmd);
+		close(data->fd_in);
 	}
 	close(data->fd_in);
 }
 
-void	ft_echo(t_token **token, t_data *data)
+void	ft_echo(t_cmd **cmd, t_data *data)
 {
-	if (!(*token)->next->value)
+	if (!(*cmd)->args)
 		write(1, " \n", 2);
-	else if (data->fd_in > -1)
-		ft_echo_file(token, data);
+	else if (data->fd_in > -1 || data->fd_out > -1)
+		ft_echo_file(cmd, data);
 	else
 	{
-		(*token) = (*token)->next;
-		write_word_fd(1, token);
+		write_word_fd(1, cmd);
 		write(1, "\n", 1);
 	}
 }

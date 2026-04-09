@@ -3,65 +3,65 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ecardoua <ecardoua@student.42.fr>          +#+  +:+       +#+        */
+/*   By: thcotza <thcotza@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/27 04:11:10 by thcotza           #+#    #+#             */
-/*   Updated: 2026/03/30 13:20:21 by ecardoua         ###   ########.fr       */
+/*   Updated: 2026/04/08 14:15:13 by thcotza          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void	ft_unset(t_data *data, t_token **token)
+static void	remove_env_var(t_data *data, char *var)
 {
-	char	**new_env;
+	t_env	*current;
+	t_env	*prev;
+	size_t	len;
+
+	current = data->env_list;
+	prev = NULL;
+	len = ft_strlen(var);
+	while (current)
+	{
+		if (ft_strncmp(var, current->line, len) == 0 && current->line[len] == '=')
+		{
+			if (prev)
+				prev->next = current->next;
+			else
+				data->env_list = current->next;
+			free(current->line);
+			free(current);
+			if (prev)
+				current = prev->next;
+			else
+				current = data->env_list;
+		}
+		else
+		{
+			prev = current;
+			current = current->next;
+		}
+	}
+}
+
+void	ft_unset(t_data *data, t_cmd **cmd)
+{
 	int		i;
 	int		n;
-	int		total;
-	int		j;
 
 	i = 0;
-	j = 0;
-	new_env = 0;
-	total = 0;
-	n = num_of_token(*token);
-	if (!(*token)->next->next)
+	n = num_of_args((*cmd)->args);
+	if (n == 0)
 	{
-		new_env = malloc(sizeof(char *) * (60 + 1));
-		while(i < 61)
-		{
-			new_env[i] = ft_strdup(data->env_cpy[i]);
-			i++;
-		}
-		new_env[i] = 0;
-		data->env_cpy = new_env;
+		lst_free(data->env_list);
+		data->env_list = char_to_ll(data->env_cpy);
 	}
 	else
 	{
-		while (data->env_cpy[i])
-			i++;
-		new_env = malloc(sizeof(char *) * (i + 1 - n));
-		total = i;
-		i = 0;
-		(*token) = (*token)->next;
-		while (i < total + 1 - n)
+		while (i < n)
 		{
-			if (ft_strcmp((*token)->value, data->env_cpy[i]) != 0)
-			{
-				new_env[j] = ft_strdup(data->env_cpy[i]);
-				j++;
-				i++;
-			}
-			else
-			{
-				i++;
-				if ((*token)->next)
-					(*token) = (*token)->next;
-				else
-					break ;
-			}
+			remove_env_var(data, (*cmd)->args[i]);
+			i++;
 		}
-		new_env[j] = 0;
-		data->env_cpy = new_env;
 	}
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ecardoua <ecardoua@student.42.fr>          +#+  +:+       +#+        */
+/*   By: thcotza <thcotza@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/27 04:07:58 by thcotza           #+#    #+#             */
-/*   Updated: 2026/03/30 13:19:40 by ecardoua         ###   ########.fr       */
+/*   Updated: 2026/04/08 14:44:06 by thcotza          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,12 @@
 
 void	ft_env(t_data *data)
 {
-	int i;
+	t_env	*current;
 
-	i = 0;
-	while (data->env_cpy[i])
+	current = data->env_list;
+	while (current)
 	{
-		printf("%s\n", data->env_cpy[i]);
-		i++;
+		printf("%s\n", current->line);
+		current = current->next;
 	}
 }

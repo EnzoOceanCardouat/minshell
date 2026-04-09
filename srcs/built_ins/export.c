@@ -3,62 +3,60 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ecardoua <ecardoua@student.42.fr>          +#+  +:+       +#+        */
+/*   By: thcotza <thcotza@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/27 04:15:12 by thcotza           #+#    #+#             */
-/*   Updated: 2026/03/30 13:19:59 by ecardoua         ###   ########.fr       */
+/*   Updated: 2026/04/02 17:06:38 by thcotza          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-int	num_of_token(t_token *token)
+int	num_of_args(char **args)
 {
 	int i;
 
 	i = 0;
-	while (token)
-	{
-		if (token->type == WORD)
-			i++;
-		token = token->next;
-	}
+	while (args && args[i])
+		i++;
 	return (i);
 }
 
-void	ft_export(t_data *data, t_token **token)
+void	ft_export(t_data *data, t_cmd **cmd)
 {
 	int 	i;
-	char	**new_env;
 	int		n;
+	t_env	*current;
+	t_env	*new_node;
 
 	i = 0;
-	n = num_of_token(*token);
-	new_env = 0;
-	if (!(*token)->next->next)
+	n = num_of_args((*cmd)->args);
+	if (!(*cmd)->args)
 	{
 		while (data->env_cpy[i])
 			printf("declare -x %s\n", data->env_cpy[i++]);
 	}
 	else
 	{
-		while (data->env_cpy[i])
-			i++;
-		new_env = malloc(sizeof(char *) * (n + i + 1));
-		if (!new_env)
-			return ;
-		i = -1;
-		while (data->env_cpy[++i])
-			new_env[i] = ft_strdup(data->env_cpy[i]);
-		(*token) = (*token)->next;
-		while ((*token)->next)
+		current = data->env_list;
+		if (current)
 		{
-			if ((*token)->type == WORD)
-				new_env[i] = ft_strdup((*token)->value);
-			i++;
-			(*token) = (*token)->next;
+			while (current->next)
+				current = current->next;
 		}
-		new_env[++i] = 0;
-		data->env_cpy = new_env;
+		while (i < n)
+		{
+			new_node = malloc(sizeof(t_env));
+			if (!new_node)
+				return;
+			new_node->line = ft_strdup((*cmd)->args[i]);
+			new_node->next = NULL;
+			if (!data->env_list)
+				data->env_list = new_node;
+			else
+				current->next = new_node;
+			current = new_node;
+			i++;
+		}
 	}
 }
