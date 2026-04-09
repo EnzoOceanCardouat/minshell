@@ -6,7 +6,7 @@
 /*   By: ecardoua <ecardoua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 15:39:14 by thcotza           #+#    #+#             */
-/*   Updated: 2026/04/01 17:42:30 by ecardoua         ###   ########.fr       */
+/*   Updated: 2026/04/09 15:39:10 by ecardoua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,36 +96,36 @@ void	s_quote_tokenizer(char *args, t_token **token, int *i)
 	(*token)->value = NULL;
 }
 
-// void	d_more_tokenization(t_token **token, int *i)
-// {
-// 	(*token)->value = ft_strdup(">>");
-// 	(*token)->type = D_MORE;
-// 	printf("token type: %d, token value: %s, i: %d\n", (*token)->type, (*token)->value, *i);
-// 	(*token)->next = malloc(sizeof(t_token));
-// 	(*token) = (*token)->next;
-// 	(*token)->next = NULL;
-// 	(*token)->value = NULL;
-// 	(*i) += 2;
-// }
+void	redir_fd(char *args, t_data **data, int *i, bool in)
+{
+	char	*word;
+	char	*tmp;
 
-// void	d_less_tokenization(t_token **token, int *i)
-// {
-// 	(*token)->value = ft_strdup("<<");
-// 	(*token)->type = D_LESS;
-// 	printf("token type: %d, token value: %s, i: %d\n", (*token)->type, (*token)->value, *i);
-// 	(*token)->next = malloc(sizeof(t_token));
-// 	(*token) = (*token)->next;
-// 	(*token)->next = NULL;
-// 	(*token)->value = NULL;
-// 	(*i) += 2;
-// }
+	if (in == false && (*data)->fd_out > 0)
+		close((*data)->fd_out);
+	if (in == true && (*data)->fd_in > 0)
+		close((*data)->fd_out);
+	(*i)++;
+	word = ft_strdup("");
+	while (args[*i] && args[*i] != '<' && args[*i] != '>' && args[*i] != '|' && args[*i] != ' ' && args[*i] != '"' && args[*i] != '\'')
+	{
+		tmp = ft_strdup(word);
+		word = ft_strcharjoin(tmp, args[*i]);
+		free(tmp);
+		(*i)++;
+	}
+	if (in == false)
+		(*data)->fd_out = open(word, O_CREAT | O_WRONLY, 0644);
+	else
+		(*data)->fd_in = open(word, O_WRONLY, 0644);
+	free(word);
+}
+
 
 bool	lexer(char *args, t_token **tok, t_data **data)
 {
 	t_token	*token;
 	int		i;
-	char	*word;
-	char	*tmp;
 
 	token = *tok;
 	i = 0;
@@ -133,110 +133,50 @@ bool	lexer(char *args, t_token **tok, t_data **data)
 	{
 		if (args[i] == '>' && args[i + 1] == '>')
 		{
-			if ((*data)->fd_out > 0)
-				close((*data)->fd_out);
-			i += 2;
-			word = ft_strdup("");
-			while (args[i] && args[i] != '<' && args[i] != '>' && args[i] != '|' && args[i] != ' ' && args[i] != '"' && args[i] != '\'')
-			{
-				tmp = ft_strdup(word);
-				word = ft_strcharjoin(tmp, args[i]);
-				free(tmp);
-				i++;
-			}
-			(*data)->fd_out = open(word, O_CREAT | O_WRONLY, 0644);
-			free(word);
-			continue ;
+			i++;
+			redir_fd(args, data, &i, false);
 		}
 		else if (args[i] == '<' && args[i + 1] == '<')
-		{
 			ft_strdup("stand by here docs");
-			i += 2;
-			continue ;
-		}
 		else if (args[i] == '<')
-		{
-			if ((*data)->fd_in < 0)
-				close((*data)->fd_in);
-			(*data)->fd_in = open(token->value, O_RDONLY, 0644);
-			i++;
-			continue ;
-		}
+			redir_fd(args, data, &i, true);
 		else if (args[i] == '>')
-		{
-			if ((*data)->fd_out < 0)
-				close((*data)->fd_out);
-			(*data)->fd_out = open(word, O_CREAT, O_WRONLY, 0644);
-			i++;
-			continue ;
-		}
+			redir_fd(args, data, &i, false);
 		else if (args[i] == '|')
+		{
 			token->type = PIPE;
-		else if (args[i] == ' ' || args[i] == 9)
-		{
+			token->next = malloc(sizeof(t_token));
+			token= token->next;
+			token->next = NULL;
+			token->value = NULL;
 			i++;
-			continue ;
 		}
+		else if (args[i] == ' ' || args[i] == 9)
+			i++;
 		else if (args[i] == '"')
-		{
 			d_quote_tokenizer(args, &token, &i);
-			continue ;
-		}
 		else if (args[i] == '\'')
-		{
 			s_quote_tokenizer(args, &token, &i);
-			continue ;
-		}
 		else
-		{
 			word_tokenizer(args, &token, &i);
-			continue ;
-		}
-		token->value = ft_strcharjoin("", args[i]);
 		//printf("token type: %d, token value: %s, len: %zu, i: %d\n", token->type, token->value, ft_strlen(token->value), i);
-		token->next = malloc(sizeof(t_token));
-		token= token->next;
-		token->next = NULL;
-		token->value = NULL;
-		i++;
 	}
 	return (false);
 }
 
-// bool	expender(t_token **token)
-// {
-// 	int	i;
+int	ft_lentab(t_token *token)
+{
+	int	i;
 
-// 	i = -1;
-// 	while ((*token))
-// 	{
-// 		while ((*token)->value[++i])
-// 		{
-// 			if ((*token)->value[i] == '\'')
-// 				break ;
-// 			else
-// 			{
-// 				if ((*token)->value[i] == '$')
-// 				{
-// 					if (ft_isdigit((int)(*token)->value[i + 1]) == 1)
-// 						ft_strdup("faire jsp");
-// 				}
-// 			}
-// 		}
-// 	}
-// 	if (ft_isdigit((*token)->value) == 1)
-// 	{
-// 		(*token)->value = ft_strdup("");
-// 		return ;
-// 	}
-// 	else
-// 	{
-// 		(*token)->value = ft_strdup("stand by");
-// 	}
-// 	return (false);
-// }
-
-// open quand rediction et save le fd avec un int fd dans sruct
+	i = 0;
+	while (token->next)
+	{
+		if (token->type == WORD)
+			i++;
+		token = token->next;
+	}
+	return (i);
+}
 
 bool	parse_input(t_data *data, t_token **token, t_cmd **cmd)
 {
@@ -247,12 +187,12 @@ bool	parse_input(t_data *data, t_token **token, t_cmd **cmd)
 		return (true);
 	if (lexer(data->input, token, &data))
 		return (true);
-	// if (expender(token))
-	// 	return (true);
-	if (parser(*token, cmd))
+	if (parser(*token, cmd, data))
 		return (true);
-	printf("cmd:%s, append:%d, outfile:%s, infile:%s\n", (*cmd)->cmd, (*cmd)->append, (*cmd)->outfile, (*cmd)->infile);
-	while ((*cmd)->args[i])
-		printf("args:%s\n", (*cmd)->args[i++]);
+	if (expender(data,*cmd, cmd, *token))
+		return (true);
+	// printf("outfile:%d, infile:%d\n", (*cmd)->outfile, (*cmd)->infile);
+	// while (i < ft_lentab(*token) -1)
+	// 	printf("args:%s\n", (*cmd)->args[i++]);
 	return (false);
 }

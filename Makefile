@@ -8,10 +8,12 @@ LIBFT		= $(LIBFT_DIR)/libft.a
 SRCS		= main/main.c \
 			  parsing/lexer.c \
 			  parsing/parsing.c \
+			  parsing/expender.c \
 			  srcs/command_manager.c \
 			  srcs/handle_signals.c \
 			  srcs/utils.c \
 			  srcs/utils2.c \
+			  srcs/utils3.c \
 			  srcs/built_ins/echo.c \
 			  srcs/built_ins/pwd.c \
 			  srcs/built_ins/cd.c \
