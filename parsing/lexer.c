@@ -6,7 +6,7 @@
 /*   By: ecardoua <ecardoua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 15:39:14 by thcotza           #+#    #+#             */
-/*   Updated: 2026/04/09 15:39:10 by ecardoua         ###   ########.fr       */
+/*   Updated: 2026/04/13 13:26:40 by ecardoua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,10 +189,10 @@ bool	parse_input(t_data *data, t_token **token, t_cmd **cmd)
 		return (true);
 	if (parser(*token, cmd, data))
 		return (true);
-	if (expender(data,*cmd, cmd, *token))
+	if (expander(cmd, *token, data))
 		return (true);
-	// printf("outfile:%d, infile:%d\n", (*cmd)->outfile, (*cmd)->infile);
-	// while (i < ft_lentab(*token) -1)
-	// 	printf("args:%s\n", (*cmd)->args[i++]);
+	printf("outfile:%d, infile:%d\n", (*cmd)->outfile, (*cmd)->infile);
+	while (i < ft_lentab(*token) -1)
+		printf("args:%s\n", (*cmd)->args[i++]);
 	return (false);
 }

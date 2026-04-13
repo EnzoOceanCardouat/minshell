@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thcotza <thcotza@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ecardoua <ecardoua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/27 04:11:10 by thcotza           #+#    #+#             */
-/*   Updated: 2026/04/08 14:15:13 by thcotza          ###   ########.fr       */
+/*   Updated: 2026/04/13 14:44:48 by ecardoua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,26 +42,25 @@ static void	remove_env_var(t_data *data, char *var)
 			current = current->next;
 		}
 	}
-}
+} // does not work if there's no '='
 
 void	ft_unset(t_data *data, t_cmd **cmd)
 {
-	int		i;
-	int		n;
+	int	i;
+	int	n;
 
 	i = 0;
 	n = num_of_args((*cmd)->args);
-	if (n == 0)
+	if (!n)
 	{
 		lst_free(data->env_list);
-		data->env_list = char_to_ll(data->env_cpy);
+		data->env_list = char_to_ll(data->original_env);
+		//update_env_cpy(data);
 	}
 	else
 	{
 		while (i < n)
-		{
-			remove_env_var(data, (*cmd)->args[i]);
-			i++;
-		}
+		remove_env_var(data, (*cmd)->args[i++]);
+		//update_env_cpy(data);
 	}
 }

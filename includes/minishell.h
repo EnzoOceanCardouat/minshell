@@ -6,7 +6,7 @@
 /*   By: ecardoua <ecardoua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 15:08:44 by thcotza           #+#    #+#             */
-/*   Updated: 2026/04/09 15:38:57 by ecardoua         ###   ########.fr       */
+/*   Updated: 2026/04/13 14:05:46 by ecardoua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ typedef struct s_data
 	int		fd_out;
 	int		verif;
 	t_env	*env_list;
+	char	**original_env;
 }			t_data;
 
 typedef enum e_token
@@ -100,7 +101,7 @@ void	ft_unset(t_data *data, t_cmd **cmd);
 bool	parser(t_token *token, t_cmd **cmd, t_data *data);
 t_env	*char_to_ll(char **env);
 void	lst_free(t_env *head);
-bool	expender(t_data *data, t_cmd *args, t_cmd **cmd, t_token *token);
+bool	expander(t_cmd **cmd, t_token *token, t_data *data);
 
 /*TEST*/
 int	ft_lentab(t_token *token);
