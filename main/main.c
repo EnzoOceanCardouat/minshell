@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thcotza <thcotza@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ecardoua <ecardoua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 14:30:50 by thcotza           #+#    #+#             */
-/*   Updated: 2026/04/02 16:05:02 by thcotza          ###   ########.fr       */
+/*   Updated: 2026/04/14 13:57:19 by ecardoua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ int	main(int argc, char **argv, char **envp)
 	data.fd_in = -1;
 	data.fd_out = -1;
 	data.env_cpy = ft_dup_env(envp);
+	data.env_list = char_to_ll(envp);
 	head = cmd;
 	signal(SIGINT, handle_sigint);
 	signal(SIGQUIT, handle_sigquit);
