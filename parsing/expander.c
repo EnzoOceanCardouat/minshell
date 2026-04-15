@@ -6,7 +6,7 @@
 /*   By: ecardoua <ecardoua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/09 14:54:43 by ecardoua          #+#    #+#             */
-/*   Updated: 2026/04/14 14:34:53 by ecardoua         ###   ########.fr       */
+/*   Updated: 2026/04/15 15:14:09 by ecardoua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,15 +23,17 @@ static int	ft_isvariable(int c)
 static char	*ft_env_search(char *src, t_env *env)
 {
 	char	*expand;
+	size_t	len;
 
+	len = ft_strlen(src);
 	while (env->next)
 	{
 		/*
 		 does not get into the if below
 		*/
-		if (ft_strncmp(env->line, src, ft_strlen(src)) == 0 && (env->line[ft_strlen(src) +1] == '=' || env->line[ft_strlen(src) +1] == '\0'))
+		if (ft_strncmp(env->line, src, len) == 0 && (env->line[len] == '=' || env->line[len] == '\0'))
 		{
-			expand = ft_substr(env->line, ft_strlen(src +1), ft_strlen(env->line - ft_strlen(src +1)));
+			expand = ft_substr(env->line, len + 1, ft_strlen(env->line) - len -1);
 			if (!expand)
 				return (NULL);
 		}
@@ -124,7 +126,7 @@ char	*ft_expand_strdup(char *s, t_env *env)
 	return (new_str);
 }
 
-char	**ft_cpytab(char **args, t_token *token, t_env *env)
+char	**ft_cpytab(char **args, t_token *token, t_env *env, bool del)
 {
 	char	**new_tab;
 	int		i;
@@ -132,12 +134,25 @@ char	**ft_cpytab(char **args, t_token *token, t_env *env)
 	new_tab = malloc(ft_lentab(token) * sizeof(char *));
 	if (!new_tab)
 		return (NULL);
-	i = -1;
-	while (args[++i])
+	i = 0;
+	while (args[i])
 	{
-		new_tab[i] = ft_expand_strdup(args[i], env);
-		if (!new_tab[i])
-			return (NULL);
+		if (del)
+		{
+			if (args[i][0] == '\'' || args[i][0] == '"')
+				new_tab[i] = ft_substr(args[i], 1, ft_strlen(args[i]) -2);
+			else
+				new_tab[i] = ft_strdup(args[i]);
+			if (!new_tab[i])
+				return (NULL);
+		}
+		else
+		{
+			new_tab[i] = ft_expand_strdup(args[i], env);
+			if (!new_tab[i])
+				return (NULL);
+		}
+		i++;
 	}
 	return (new_tab);
 }
@@ -148,9 +163,9 @@ bool	expander(t_cmd **cmd, t_token *token, t_data *data)
 	int		i;
 
 	i = 0;
-	tmp = ft_cpytab((*cmd)->args, token, data->env_list);
+	tmp = ft_cpytab((*cmd)->args, token, data->env_list, false);
 	if (!tmp)
-		return (NULL);
+		return (true);
 	free((*cmd)->args);
 	(*cmd)->args = tmp;
 	// while (tmp[i])

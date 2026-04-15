@@ -6,7 +6,7 @@
 /*   By: ecardoua <ecardoua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 15:08:44 by thcotza           #+#    #+#             */
-/*   Updated: 2026/04/13 14:05:46 by ecardoua         ###   ########.fr       */
+/*   Updated: 2026/04/15 13:47:30 by ecardoua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,7 @@ bool	parser(t_token *token, t_cmd **cmd, t_data *data);
 t_env	*char_to_ll(char **env);
 void	lst_free(t_env *head);
 bool	expander(t_cmd **cmd, t_token *token, t_data *data);
+char	**ft_cpytab(char **args, t_token *token, t_env *env, bool del);
 
 /*TEST*/
 int	ft_lentab(t_token *token);

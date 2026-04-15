@@ -6,7 +6,7 @@
 /*   By: ecardoua <ecardoua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 15:39:14 by thcotza           #+#    #+#             */
-/*   Updated: 2026/04/14 10:29:12 by ecardoua         ###   ########.fr       */
+/*   Updated: 2026/04/15 14:22:50 by ecardoua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,6 +178,20 @@ int	ft_lentab(t_token *token)
 	return (i);
 }
 
+bool	quote_del(t_cmd **cmd, t_token *token, t_data *data)
+{
+	char	**tmp;
+	int	i;
+
+	i = 0;
+	tmp = ft_cpytab((*cmd)->args, token, data->env_list, true);
+	if (!tmp)
+		return (true);
+	free((*cmd)->args);
+	(*cmd)->args = tmp;
+	return (false);
+}
+
 bool	parse_input(t_data *data, t_token **token, t_cmd **cmd)
 {
 	int	i;
@@ -190,6 +204,8 @@ bool	parse_input(t_data *data, t_token **token, t_cmd **cmd)
 	if (parser(*token, cmd, data))
 		return (true);
 	if (expander(cmd, *token, data))
+		return (true);
+	if (quote_del(cmd, *token, data))
 		return (true);
 	// printf("outfile:%d, infile:%d\n", (*cmd)->outfile, (*cmd)->infile);
 	// while (i < ft_lentab(*token) -1)
