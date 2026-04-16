@@ -6,7 +6,7 @@
 /*   By: ecardoua <ecardoua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 15:39:14 by thcotza           #+#    #+#             */
-/*   Updated: 2026/04/15 14:22:50 by ecardoua         ###   ########.fr       */
+/*   Updated: 2026/04/16 13:53:36 by ecardoua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,16 +41,8 @@ void	d_quote_tokenizer(char *args, t_token **token, int *i)
 
 	d_quote = ft_strdup("\"");
 	(*i)++;
-	while (args[*i])
+	while (args[*i] && args[*i] != ' ' && args[*i] != '<' && args[*i] != '>' && args[*i] != '|')
 	{
-		if (args[*i] == '"')
-		{
-			tmp = ft_strdup(d_quote);
-			d_quote = ft_strcharjoin(tmp, args[*i]);
-			free(tmp);
-			(*i)++;
-			break ;
-		}
 		tmp = ft_strdup(d_quote);
 		d_quote = ft_strcharjoin(tmp, args[*i]);
 		free(tmp);
@@ -72,16 +64,8 @@ void	s_quote_tokenizer(char *args, t_token **token, int *i)
 
 	d_quote = ft_strdup("\'");
 	(*i)++;
-	while (args[*i])
+	while (args[*i] && args[*i] != ' ' && args[*i] != '<' && args[*i] != '>' && args[*i] != '|')
 	{
-		if (args[*i] == '\'')
-		{
-			tmp = ft_strdup(d_quote);
-			d_quote = ft_strcharjoin(tmp, args[*i]);
-			free(tmp);
-			(*i)++;
-			break ;
-		}
 		tmp = ft_strdup(d_quote);
 		d_quote = ft_strcharjoin(tmp, args[*i]);
 		free(tmp);
@@ -178,12 +162,41 @@ int	ft_lentab(t_token *token)
 	return (i);
 }
 
+bool	quote_count(char **args)
+{
+	int	s_quote;
+	int	d_quote;
+	int	i;
+	int	j;
+
+	s_quote = 0;
+	d_quote = 0;
+	i = -1;
+	while (args[++i])
+	{
+		j = -1;
+		while (args[i][++j])
+		{
+			if (args[i][j] == '\'')
+				s_quote++;
+			else if (args[i][j] == '"')
+				d_quote++;
+		}
+	}
+	if (s_quote %2 == 0)
+		return (false);
+	else
+		return (true);
+}
+
 bool	quote_del(t_cmd **cmd, t_token *token, t_data *data)
 {
 	char	**tmp;
 	int	i;
 
 	i = 0;
+	if (quote_count((*cmd)->args))
+		return (true);
 	tmp = ft_cpytab((*cmd)->args, token, data->env_list, true);
 	if (!tmp)
 		return (true);
@@ -209,6 +222,6 @@ bool	parse_input(t_data *data, t_token **token, t_cmd **cmd)
 		return (true);
 	// printf("outfile:%d, infile:%d\n", (*cmd)->outfile, (*cmd)->infile);
 	// while (i < ft_lentab(*token) -1)
-	// 	printf("args:%s\n", (*cmd)->args[i++]);
+	// 	printf("argsyo:%s\n", (*cmd)->args[i++]);
 	return (false);
 }

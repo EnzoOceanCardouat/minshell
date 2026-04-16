@@ -6,7 +6,7 @@
 /*   By: ecardoua <ecardoua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/09 14:54:43 by ecardoua          #+#    #+#             */
-/*   Updated: 2026/04/15 15:14:09 by ecardoua         ###   ########.fr       */
+/*   Updated: 2026/04/16 14:43:23 by ecardoua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,6 +126,57 @@ char	*ft_expand_strdup(char *s, t_env *env)
 	return (new_str);
 }
 
+size_t	num_del_quote(char *args)
+{
+	int	i;
+	int	d_quote;
+	int	s_quote;
+
+	i = -1;
+	d_quote = 0;
+	s_quote = 0;
+	while (args[++i])
+	{
+		if (args[i] == '\'' && (d_quote == 0 || d_quote%2 == 0))
+			s_quote++;
+		if (args[i] == '"' && (s_quote == 0 || s_quote%2 == 0))
+			d_quote++;
+	}
+	return (s_quote + d_quote);
+}
+
+char	*del_quote(char *args)
+{
+	int	d_quote;
+	int	s_quote;
+	int	i;
+	char	*new_args;
+	int	j;
+
+	d_quote = 0;
+	s_quote = 0;
+	i = 0;
+	j = 0;
+	new_args = malloc(sizeof(ft_strlen(args) - num_del_quote(args)));
+	while (args[i])
+	{
+		if (args[i] == '\'' && d_quote%2 == 0)
+		{
+			s_quote++;
+			i++;
+		}
+		else if (args[i] == '"' && s_quote%2 == 0)
+		{
+			d_quote++;
+			i++;
+		}
+		else
+			new_args[j++] = args[i++];
+	}
+	new_args[j] = '\0';
+	return (new_args);
+}
+
 char	**ft_cpytab(char **args, t_token *token, t_env *env, bool del)
 {
 	char	**new_tab;
@@ -138,20 +189,11 @@ char	**ft_cpytab(char **args, t_token *token, t_env *env, bool del)
 	while (args[i])
 	{
 		if (del)
-		{
-			if (args[i][0] == '\'' || args[i][0] == '"')
-				new_tab[i] = ft_substr(args[i], 1, ft_strlen(args[i]) -2);
-			else
-				new_tab[i] = ft_strdup(args[i]);
-			if (!new_tab[i])
-				return (NULL);
-		}
+			new_tab[i] = del_quote(args[i]);
 		else
-		{
 			new_tab[i] = ft_expand_strdup(args[i], env);
-			if (!new_tab[i])
-				return (NULL);
-		}
+		if (!new_tab[i])
+			return (NULL);
 		i++;
 	}
 	return (new_tab);
