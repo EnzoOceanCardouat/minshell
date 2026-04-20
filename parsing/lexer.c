@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: enzooceancardouat <enzooceancardouat@st    +#+  +:+       +#+        */
+/*   By: ecardoua <ecardoua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 15:39:14 by thcotza           #+#    #+#             */
-/*   Updated: 2026/04/17 15:28:26 by enzooceanca      ###   ########.fr       */
+/*   Updated: 2026/04/20 14:28:51 by ecardoua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,11 +38,21 @@ void	d_quote_tokenizer(char *args, t_token **token, int *i)
 {
 	char	*d_quote;
 	char	*tmp;
+	int		s_quote;
+	int		double_quote;
 
+	s_quote = 0;
+	double_quote = 0;
 	d_quote = ft_strdup("\"");
 	(*i)++;
-	while (args[*i] && args[*i] != ' ' && args[*i] != '<' && args[*i] != '>' && args[*i] != '|')
+	while (args[*i])
 	{
+		if (args[*i] == '\'' && double_quote%2 == 0)
+			s_quote++;
+		else if (args[*i] == '"' && s_quote%2 == 0)
+			double_quote++;
+		if (double_quote%2 == 0 && s_quote%2 == 0 && args[*i] == ' ' && args[*i] == '>' && args[*i] == '<' && args[*i] == '|')
+			break ;
 		tmp = ft_strdup(d_quote);
 		d_quote = ft_strcharjoin(tmp, args[*i]);
 		free(tmp);

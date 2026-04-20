@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: enzooceancardouat <enzooceancardouat@st    +#+  +:+       +#+        */
+/*   By: ecardoua <ecardoua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/09 14:54:43 by ecardoua          #+#    #+#             */
-/*   Updated: 2026/04/17 15:35:35 by enzooceanca      ###   ########.fr       */
+/*   Updated: 2026/04/20 11:08:21 by ecardoua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,13 +49,21 @@ int	size_malloc_expand(char *s, t_env *env)
 	char	*variable;
 	char	*tmp;
 	char	*expand;
+	int		s_quote;
+	int		d_quote;
 
 	i = 0;
-
+	s_quote = 0;
+	d_quote = 0;
 	variable = ft_strdup("");
+	expand = ft_strdup("");
 	while (s[i])
 	{
-		if (s[i] == '$' && s[0] != '\'')
+		if (s[i] == '\'' && d_quote%2 == 0)
+			s_quote++;
+		else if (s[i] == '"' && s_quote%2 == 0)
+			d_quote++;
+		if (s[i] == '$' && s_quote%2 == 0)
 		{
 			j = i;
 			j++;
@@ -74,7 +82,8 @@ int	size_malloc_expand(char *s, t_env *env)
 				return (-1);
 			i += ft_strlen(expand);
 		}
-		i++;
+		else
+			i++;
 	}
 	//free(variable);
 	return (i);
@@ -88,10 +97,17 @@ char	*ft_expand_strdup(char *s, t_env *env)
 	char	*variable;
 	char	*tmp;
 	char	*expand;
+	int		s_quote;
+	int		d_quote;
+	int		k;
 
 	i = 0;
 	j = 0;
-	new_str = malloc(size_malloc_expand(s, env));
+	s_quote = 0;
+	d_quote = 0;
+	k = 0;
+	printf("malloc;%d\n", size_malloc_expand(s, env));
+	new_str = malloc(size_malloc_expand(s, env) * sizeof(char));
 	if (!new_str)
 		return (NULL);
 	variable = ft_strdup("");
@@ -99,7 +115,11 @@ char	*ft_expand_strdup(char *s, t_env *env)
 		return (NULL);
 	while (s[i])
 	{
-		if (s[i] == '$' && s[0] != '\'')
+		if (s[i] == '\'' && d_quote%2 == 0)
+			s_quote++;
+		else if (s[i] == '"' && s_quote%2 == 0)
+			d_quote++;
+		if (s[i] == '$' && s_quote%2 == 0)
 		{
 			i++;
 			while (ft_isvariable(s[i]) == 0)
@@ -108,19 +128,11 @@ char	*ft_expand_strdup(char *s, t_env *env)
 				variable = ft_strcharjoin(tmp, s[i++]);
 				free(tmp);
 			}
-			tmp = new_str;
 			expand = ft_env_search(variable, env);
-			// (void)env;
-			// expand = getenv(variable);
-			new_str = ft_strjoin(tmp, expand);
-			if (!new_str)
-				return (NULL);
-			free(tmp);
-			j = ft_strlen(new_str);
+			while (expand[k])
+				new_str[j++] = expand[k++];
 		}
-		new_str[j] = s[i];
-		i++;
-		j++;
+		new_str[j++] = s[i++];
 	}
 	new_str[j] = '\0';
 	return (new_str);
@@ -157,7 +169,7 @@ char	*del_quote(char *args)
 	s_quote = 0;
 	i = 0;
 	j = 0;
-	new_args = malloc(ft_strlen(args) - num_del_quote(args));
+	new_args = malloc(ft_strlen(args) - num_del_quote(args) * sizeof(char));
 	while (args[i])
 	{
 		if (args[i] == '\'' && d_quote%2 == 0)

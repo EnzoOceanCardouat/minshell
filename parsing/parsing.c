@@ -3,46 +3,97 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: enzooceancardouat <enzooceancardouat@st    +#+  +:+       +#+        */
+/*   By: ecardoua <ecardoua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 14:05:13 by ecardoua          #+#    #+#             */
-/*   Updated: 2026/04/17 15:26:36 by enzooceanca      ###   ########.fr       */
+/*   Updated: 2026/04/20 13:01:36 by ecardoua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
+static int	count_cmd_words(t_token *token)
+{
+	int	count;
+
+	count = 0;
+	while (token && token->type != PIPE)
+	{
+		if (token->type == WORD)
+			count++;
+		token = token->next;
+	}
+	return (count);
+}
+
+static t_cmd	*create_cmd(void)
+{
+	t_cmd	*new;
+
+	new = malloc(sizeof(t_cmd));
+	if (!new)
+		return (NULL);
+	new->cmd = NULL;
+	new->args = NULL;
+	new->infile = -1;
+	new->outfile = -1;
+	new->next = NULL;
+	return (new);
+}
+
 bool	parser(t_token *token, t_cmd **cmd, t_data *data)
 {
-	int	i;
-	t_token	*tmp;
+	t_cmd	*current;
+	int		arg_i;
+	int		word_count;
 
-	i = 0;
-	tmp = token;
-	while (tmp->next)
+	(void)data;
+	if (!token)
+		return (true);
+	current = *cmd;
+	current->cmd = NULL;
+	current->args = NULL;
+	current->infile = -1;
+	current->outfile = -1;
+	current->next = NULL;
+	while (token)
 	{
-		if (tmp->type == WORD)
-			i++;
-		tmp = tmp->next;
-	}
-	(*cmd)->args = malloc((i + 1) * sizeof(char *));
-	i = 0;
-	if (token->type != PIPE)
-	{
-		(*cmd)->cmd = ft_strdup(token->value);
-		token = token->next;
-		while (token->next && token->type == WORD)
+		if (token->type == PIPE)
 		{
-			(*cmd)->args[i] = ft_strdup(token->value);
+			current->next = create_cmd();
+			if (!current->next)
+				return (true);
+			current = current->next;
 			token = token->next;
-			i++;
-			if (data->fd_in > 0 && (*cmd)->infile != data->fd_in)
-			(*cmd)->infile = data->fd_in;
-			else if (data->fd_out > 0 && (*cmd)->outfile != data->fd_out)
-				(*cmd)->outfile = data->fd_out;
+			continue ;
 		}
+		if (token->type == WORD)
+		{
+			if (!current->cmd)
+			{
+				current->cmd = ft_strdup(token->value);
+				word_count = count_cmd_words(token) - 1;
+				if (word_count < 0)
+					word_count = 0;
+				current->args = malloc(sizeof(char *) * (word_count + 1));
+				if (!current->args)
+					return (true);
+				arg_i = 0;
+			}
+			else
+				current->args[arg_i++] = ft_strdup(token->value);
+			}
+		token = token->next;
 	}
-	(*cmd)->args[i] = NULL;
+	if (current->args)
+		current->args[arg_i] = NULL;
+	else
+	{
+		current->args = malloc(sizeof(char *) * 1);
+		if (!current->args)
+			return (true);
+		current->args[0] = NULL;
+	}
 	return (false);
 }
 

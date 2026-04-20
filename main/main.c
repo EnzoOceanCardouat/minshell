@@ -6,7 +6,7 @@
 /*   By: ecardoua <ecardoua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 14:30:50 by thcotza           #+#    #+#             */
-/*   Updated: 2026/04/16 13:45:00 by ecardoua         ###   ########.fr       */
+/*   Updated: 2026/04/20 13:05:18 by ecardoua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ int	main(int argc, char **argv, char **envp)
 	data.fd_in = -1;
 	data.fd_out = -1;
 	data.env_cpy = ft_dup_env(envp);
+	data.original_env = ft_dup_env(envp);
 	data.env_list = char_to_ll(envp);
 	head = cmd;
 	signal(SIGINT, handle_sigint);
