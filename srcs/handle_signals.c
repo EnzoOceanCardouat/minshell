@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_signals.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thcotza <thcotza@student.42.fr>            +#+  +:+       +#+        */
+/*   By: enzooceancardouat <enzooceancardouat@st    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 15:21:56 by thcotza           #+#    #+#             */
-/*   Updated: 2026/03/18 18:31:44 by thcotza          ###   ########.fr       */
+/*   Updated: 2026/04/17 15:37:47 by enzooceanca      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	handle_sigint(int sig)
 	(void)sig;
 	printf("\n");
 	rl_on_new_line();
-	rl_replace_line("", 0);
+	//rl_replace_line("", 0); //undeclared function on my MacBook
 	rl_redisplay();
 }
 

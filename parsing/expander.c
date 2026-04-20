@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ecardoua <ecardoua@student.42.fr>          +#+  +:+       +#+        */
+/*   By: enzooceancardouat <enzooceancardouat@st    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/09 14:54:43 by ecardoua          #+#    #+#             */
-/*   Updated: 2026/04/16 14:43:23 by ecardoua         ###   ########.fr       */
+/*   Updated: 2026/04/17 15:35:35 by enzooceanca      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ char	*ft_expand_strdup(char *s, t_env *env)
 
 	i = 0;
 	j = 0;
-	new_str = malloc(sizeof(size_malloc_expand(s, env)));
+	new_str = malloc(size_malloc_expand(s, env));
 	if (!new_str)
 		return (NULL);
 	variable = ft_strdup("");
@@ -157,7 +157,7 @@ char	*del_quote(char *args)
 	s_quote = 0;
 	i = 0;
 	j = 0;
-	new_args = malloc(sizeof(ft_strlen(args) - num_del_quote(args)));
+	new_args = malloc(ft_strlen(args) - num_del_quote(args));
 	while (args[i])
 	{
 		if (args[i] == '\'' && d_quote%2 == 0)
@@ -202,9 +202,9 @@ char	**ft_cpytab(char **args, t_token *token, t_env *env, bool del)
 bool	expander(t_cmd **cmd, t_token *token, t_data *data)
 {
 	char	**tmp;
-	int		i;
+	// int		i;
 
-	i = 0;
+	// i = 0;
 	tmp = ft_cpytab((*cmd)->args, token, data->env_list, false);
 	if (!tmp)
 		return (true);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thcotza <thcotza@student.42.fr>            +#+  +:+       +#+        */
+/*   By: enzooceancardouat <enzooceancardouat@st    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 16:12:24 by thcotza           #+#    #+#             */
-/*   Updated: 2026/03/27 04:03:01 by thcotza          ###   ########.fr       */
+/*   Updated: 2026/04/17 15:38:45 by enzooceanca      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,6 @@ void	ft_bzero(void *s, size_t n)
 
 void	free_data(t_data *data)
 {
-	int	i;
-
-	i = 0;
 	if (data->input)
 		free(data->input);
 	if (data->command)
@@ -49,7 +46,6 @@ int	ft_strcmp(char *s1, char *s2)
 char	*ft_strcharjoin(char const *s1, char const s2)
 {
 	size_t	i;
-	size_t	j;
 	char	*dest;
 
 	if (!s1 || !s2)
@@ -64,7 +60,6 @@ char	*ft_strcharjoin(char const *s1, char const s2)
 		dest[i] = s1[i];
 		i++;
 	}
-	j = 0;
 	dest[i++] = s2;
 	dest[i] = '\0';
 	return (dest);

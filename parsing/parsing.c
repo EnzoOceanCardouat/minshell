@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ecardoua <ecardoua@student.42.fr>          +#+  +:+       +#+        */
+/*   By: enzooceancardouat <enzooceancardouat@st    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 14:05:13 by ecardoua          #+#    #+#             */
-/*   Updated: 2026/04/13 14:03:54 by ecardoua         ###   ########.fr       */
+/*   Updated: 2026/04/17 15:26:36 by enzooceanca      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

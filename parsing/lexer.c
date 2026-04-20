@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ecardoua <ecardoua@student.42.fr>          +#+  +:+       +#+        */
+/*   By: enzooceancardouat <enzooceancardouat@st    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 15:39:14 by thcotza           #+#    #+#             */
-/*   Updated: 2026/04/16 13:53:36 by ecardoua         ###   ########.fr       */
+/*   Updated: 2026/04/17 15:28:26 by enzooceanca      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,7 +183,7 @@ bool	quote_count(char **args)
 				d_quote++;
 		}
 	}
-	if (s_quote %2 == 0)
+	if (s_quote %2 == 0 && d_quote %2 == 0)
 		return (false);
 	else
 		return (true);
@@ -192,9 +192,7 @@ bool	quote_count(char **args)
 bool	quote_del(t_cmd **cmd, t_token *token, t_data *data)
 {
 	char	**tmp;
-	int	i;
 
-	i = 0;
 	if (quote_count((*cmd)->args))
 		return (true);
 	tmp = ft_cpytab((*cmd)->args, token, data->env_list, true);
@@ -207,9 +205,9 @@ bool	quote_del(t_cmd **cmd, t_token *token, t_data *data)
 
 bool	parse_input(t_data *data, t_token **token, t_cmd **cmd)
 {
-	int	i;
+	// int	i;
 
-	i = 0;
+	// i = 0;
 	if (!(*token))
 		return (true);
 	if (lexer(data->input, token, &data))

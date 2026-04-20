@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_memmove.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thcotza <thcotza@student.42.fr>            +#+  +:+       +#+        */
+/*   By: enzooceancardouat <enzooceancardouat@st    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 14:11:38 by thcotza           #+#    #+#             */
-/*   Updated: 2025/10/21 22:19:43 by thcotza          ###   ########.fr       */
+/*   Updated: 2026/04/17 15:26:11 by enzooceanca      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,9 @@
 
 void	*ft_memmove(void *dest, const void *src, size_t n)
 {
-	size_t				i;
 	char				*ldest;
 	const char			*lsrc;
 
-	i = 0;
 	ldest = (char *)dest;
 	lsrc = (const char *)src;
 	if (!ldest && !src)
