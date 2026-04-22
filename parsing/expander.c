@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ecardoua <ecardoua@student.42.fr>          +#+  +:+       +#+        */
+/*   By: enzooceancardouat <enzooceancardouat@st    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/09 14:54:43 by ecardoua          #+#    #+#             */
-/*   Updated: 2026/04/20 11:08:21 by ecardoua         ###   ########.fr       */
+/*   Updated: 2026/04/21 20:56:00 by enzooceanca      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,7 +169,7 @@ char	*del_quote(char *args)
 	s_quote = 0;
 	i = 0;
 	j = 0;
-	new_args = malloc(ft_strlen(args) - num_del_quote(args) * sizeof(char));
+	new_args = malloc((ft_strlen(args) - num_del_quote(args) + 1) * sizeof(char));
 	while (args[i])
 	{
 		if (args[i] == '\'' && d_quote%2 == 0)
