@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: enzooceancardouat <enzooceancardouat@st    +#+  +:+       +#+        */
+/*   By: ecardoua <ecardoua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/09 14:54:43 by ecardoua          #+#    #+#             */
-/*   Updated: 2026/04/21 20:56:00 by enzooceanca      ###   ########.fr       */
+/*   Updated: 2026/04/22 14:20:17 by ecardoua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,6 @@ char	*ft_expand_strdup(char *s, t_env *env)
 	s_quote = 0;
 	d_quote = 0;
 	k = 0;
-	printf("malloc;%d\n", size_malloc_expand(s, env));
 	new_str = malloc(size_malloc_expand(s, env) * sizeof(char));
 	if (!new_str)
 		return (NULL);
@@ -149,9 +148,9 @@ size_t	num_del_quote(char *args)
 	s_quote = 0;
 	while (args[++i])
 	{
-		if (args[i] == '\'' && (d_quote == 0 || d_quote%2 == 0))
+		if (args[i] == '\'' && d_quote%2 == 0)
 			s_quote++;
-		if (args[i] == '"' && (s_quote == 0 || s_quote%2 == 0))
+		if (args[i] == '"' && s_quote%2 == 0)
 			d_quote++;
 	}
 	return (s_quote + d_quote);
@@ -214,10 +213,12 @@ char	**ft_cpytab(char **args, t_token *token, t_env *env, bool del)
 bool	expander(t_cmd **cmd, t_token *token, t_data *data)
 {
 	char	**tmp;
+	t_env	*env;
 	// int		i;
 
 	// i = 0;
-	tmp = ft_cpytab((*cmd)->args, token, data->env_list, false);
+	env = data->env_list;
+	tmp = ft_cpytab((*cmd)->args, token, env, false);
 	if (!tmp)
 		return (true);
 	free((*cmd)->args);

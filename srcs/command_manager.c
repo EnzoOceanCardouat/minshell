@@ -6,7 +6,7 @@
 /*   By: ecardoua <ecardoua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 16:16:23 by thcotza           #+#    #+#             */
-/*   Updated: 2026/04/20 13:17:27 by ecardoua         ###   ########.fr       */
+/*   Updated: 2026/04/27 13:29:12 by ecardoua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ static void	exec_external(t_cmd *cmd, t_data *data)
 	exit(127);
 }
 
-static void	execute_child(t_cmd *cmd, t_data *data)
+static void	execute_child(t_cmd *cmd, t_data *data, t_token **token)
 {
 	if (cmd->infile != -1)
 	{
@@ -121,7 +121,7 @@ static void	execute_child(t_cmd *cmd, t_data *data)
 	else if (ft_strcmp(cmd->cmd, "env") == 0)
 		ft_env(data);
 	else if (ft_strcmp(cmd->cmd, "exit") == 0)
-		ft_exit(data);
+		ft_exit(data, &cmd, token);
 	else
 		exec_external(cmd, data);
 	exit(0);
@@ -140,7 +140,7 @@ static int	count_commands(t_cmd *cmd)
 	return (count);
 }
 
-void	manage_commands(t_cmd *cmd, t_data *data)
+void	manage_commands(t_cmd *cmd, t_data *data, t_token **token)
 {
 	int		*child_pids;
 	int		idx;
@@ -148,7 +148,6 @@ void	manage_commands(t_cmd *cmd, t_data *data)
 	int		prev_fd;
 	t_cmd	*current;
 
-	data->env_list = char_to_ll(data->env_cpy);
 	idx = 0;
 	prev_fd = -1;
 	child_pids = malloc(sizeof(int) * count_commands(cmd));
@@ -173,7 +172,7 @@ void	manage_commands(t_cmd *cmd, t_data *data)
 				dup2(pipefd[1], STDOUT_FILENO);
 				close(pipefd[1]);
 			}
-			execute_child(current, data);
+			execute_child(current, data, token);
 		}
 		else
 		{

@@ -6,7 +6,7 @@
 /*   By: ecardoua <ecardoua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 15:39:14 by thcotza           #+#    #+#             */
-/*   Updated: 2026/04/20 14:28:51 by ecardoua         ###   ########.fr       */
+/*   Updated: 2026/04/27 14:07:25 by ecardoua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ void	word_tokenizer(char *args, t_token **token, int *i)
 	}
 	(*token)->value = word;
 	(*token)->type = WORD;
-	//printf("token type: %d, token value: %s, len: %zu, i: %d\n", (*token)->type, (*token)->value, ft_strlen((*token)->value), *i);
 	(*token)->next = malloc(sizeof(t_token));
 	*token = (*token)->next;
 	(*token)->next = NULL;
@@ -60,7 +59,6 @@ void	d_quote_tokenizer(char *args, t_token **token, int *i)
 	}
 	(*token)->value = d_quote;
 	(*token)->type = WORD;
-	//printf("token type: %d, token value: %s, len: %zu, i: %d\n", (*token)->type, (*token)->value, ft_strlen((*token)->value), *i);
 	(*token)->next = malloc(sizeof(t_token));
 	*token = (*token)->next;
 	(*token)->next = NULL;
@@ -83,14 +81,13 @@ void	s_quote_tokenizer(char *args, t_token **token, int *i)
 	}
 	(*token)->value = d_quote;
 	(*token)->type = WORD;
-	//printf("token type: %d, token value: %s, len: %zu, i: %d\n", (*token)->type, (*token)->value, ft_strlen((*token)->value), *i);
 	(*token)->next = malloc(sizeof(t_token));
 	*token = (*token)->next;
 	(*token)->next = NULL;
 	(*token)->value = NULL;
 }
 
-void	redir_fd(char *args, t_data **data, int *i, bool in)
+void	redir_fd(char *args, t_data **data, int *i, bool in, bool append)
 {
 	char	*word;
 	char	*tmp;
@@ -108,13 +105,14 @@ void	redir_fd(char *args, t_data **data, int *i, bool in)
 		free(tmp);
 		(*i)++;
 	}
-	if (in == false)
-		(*data)->fd_out = open(word, O_CREAT | O_WRONLY, 0644);
-	else
+	if (in)
 		(*data)->fd_in = open(word, O_WRONLY, 0644);
+	if (append && in)
+		(*data)->fd_in = open(word, O_WRONLY | O_APPEND, 0644);
+	else
+		(*data)->fd_out = open(word, O_WRONLY | O_CREAT, 0644);
 	free(word);
 }
-
 
 bool	lexer(char *args, t_token **tok, t_data **data)
 {
@@ -128,14 +126,14 @@ bool	lexer(char *args, t_token **tok, t_data **data)
 		if (args[i] == '>' && args[i + 1] == '>')
 		{
 			i++;
-			redir_fd(args, data, &i, false);
+			redir_fd(args, data, &i, false, true);
 		}
 		else if (args[i] == '<' && args[i + 1] == '<')
 			ft_strdup("stand by here docs");
 		else if (args[i] == '<')
-			redir_fd(args, data, &i, true);
+			redir_fd(args, data, &i, true, false);
 		else if (args[i] == '>')
-			redir_fd(args, data, &i, false);
+			redir_fd(args, data, &i, false, false);
 		else if (args[i] == '|')
 		{
 			token->type = PIPE;
@@ -153,23 +151,8 @@ bool	lexer(char *args, t_token **tok, t_data **data)
 			s_quote_tokenizer(args, &token, &i);
 		else
 			word_tokenizer(args, &token, &i);
-		//printf("token type: %d, token value: %s, len: %zu, i: %d\n", token->type, token->value, ft_strlen(token->value), i);
 	}
 	return (false);
-}
-
-int	ft_lentab(t_token *token)
-{
-	int	i;
-
-	i = 0;
-	while (token->next)
-	{
-		if (token->type == WORD)
-			i++;
-		token = token->next;
-	}
-	return (i);
 }
 
 bool	quote_count(char **args)
@@ -215,9 +198,6 @@ bool	quote_del(t_cmd **cmd, t_token *token, t_data *data)
 
 bool	parse_input(t_data *data, t_token **token, t_cmd **cmd)
 {
-	// int	i;
-
-	// i = 0;
 	if (!(*token))
 		return (true);
 	if (lexer(data->input, token, &data))
@@ -228,8 +208,5 @@ bool	parse_input(t_data *data, t_token **token, t_cmd **cmd)
 		return (true);
 	if (quote_del(cmd, *token, data))
 		return (true);
-	// printf("outfile:%d, infile:%d\n", (*cmd)->outfile, (*cmd)->infile);
-	// while (i < ft_lentab(*token) -1)
-	// 	printf("argsyo:%s\n", (*cmd)->args[i++]);
 	return (false);
 }

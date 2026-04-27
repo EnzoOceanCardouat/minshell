@@ -6,7 +6,7 @@
 /*   By: ecardoua <ecardoua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 15:08:44 by thcotza           #+#    #+#             */
-/*   Updated: 2026/04/15 13:47:30 by ecardoua         ###   ########.fr       */
+/*   Updated: 2026/04/22 13:48:30 by ecardoua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,12 +64,6 @@ typedef struct s_token
 	char			*value;
 	t_type			type;
 	struct s_token	*next;
-	//0 = word
-	//1 = <
-	//2 = >
-	//3 = <<
-	//6 = >>
-	//5 = |
 }					t_token;
 
 typedef struct s_cmd
@@ -82,18 +76,18 @@ typedef struct s_cmd
 }					t_cmd;
 
 void	ft_bzero(void *s, size_t n);
-void	free_data(t_data *data);
+void	free_box(t_data *data, t_cmd **cmd, t_token **token);
 void	handle_sigint(int sig);
 void	handle_sigquit(int sig);
 bool	parse_input(t_data *data, t_token **token, t_cmd **cmd);
-void	manage_commands(t_cmd *cmd, t_data *data);
+void	manage_commands(t_cmd *cmd, t_data *data, t_token **token);
 int		ft_strcmp(char *s1, char *s2);
 char	*ft_strcharjoin(char const *s1, char const s2);
 void	ft_putstr_fd(char *s, int fd);
 void	ft_echo(t_cmd **cmd, t_data *data);
 void	ft_pwd(t_data *data);
 void	ft_cd(t_cmd **cmd);
-void	ft_exit(t_data *data);
+void	ft_exit(t_data *data, t_cmd **cmd, t_token **token);
 void	ft_env(t_data *data);
 void	ft_export(t_data *data, t_cmd **cmd);
 int		num_of_args(char **args);
@@ -103,8 +97,6 @@ t_env	*char_to_ll(char **env);
 void	lst_free(t_env *head);
 bool	expander(t_cmd **cmd, t_token *token, t_data *data);
 char	**ft_cpytab(char **args, t_token *token, t_env *env, bool del);
-
-/*TEST*/
-int	ft_lentab(t_token *token);
+int		ft_lentab(t_token *token);
 
 #endif

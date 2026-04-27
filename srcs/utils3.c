@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils3.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thcotza <thcotza@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ecardoua <ecardoua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/02 16:39:53 by thcotza           #+#    #+#             */
-/*   Updated: 2026/04/08 14:07:34 by thcotza          ###   ########.fr       */
+/*   Updated: 2026/04/27 13:53:45 by ecardoua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,4 +54,18 @@ t_env	*char_to_ll(char **env)
 		i++;
 	}
 	return (head);
+}
+
+int	ft_lentab(t_token *token)
+{
+	int	i;
+
+	i = 0;
+	while (token->next)
+	{
+		if (token->type == WORD)
+			i++;
+		token = token->next;
+	}
+	return (i);
 }

@@ -6,7 +6,7 @@
 /*   By: ecardoua <ecardoua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 14:30:50 by thcotza           #+#    #+#             */
-/*   Updated: 2026/04/20 13:05:18 by ecardoua         ###   ########.fr       */
+/*   Updated: 2026/04/22 13:46:10 by ecardoua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,8 +62,8 @@ int	main(int argc, char **argv, char **envp)
 		if (data.input[0] != '\0')
 			add_history(data.input);
 		if (!parse_input(&data, &token, &cmd))
-			manage_commands(head, &data);
-		free_data(&data);
+			manage_commands(head, &data, &token);
+		free_box(&data, &cmd, &token);
 	}
 	printf("exit\n");
 	return (0);

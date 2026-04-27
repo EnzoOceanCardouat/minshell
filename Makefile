@@ -7,7 +7,7 @@ OBJ_DIR		= obj
 LIBFT		= $(LIBFT_DIR)/libft.a
 SRCS		= main/main.c \
 			  parsing/lexer.c \
-			  parsing/parsing.c \
+			  parsing/parser.c \
 			  parsing/expander.c \
 			  srcs/command_manager.c \
 			  srcs/handle_signals.c \
