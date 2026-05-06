@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils3.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ecardoua <ecardoua@student.42.fr>          +#+  +:+       +#+        */
+/*   By: thcotza <thcotza@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/02 16:39:53 by thcotza           #+#    #+#             */
-/*   Updated: 2026/04/27 13:53:45 by ecardoua         ###   ########.fr       */
+/*   Updated: 2026/04/09 20:16:16 by thcotza          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,16 +56,56 @@ t_env	*char_to_ll(char **env)
 	return (head);
 }
 
-int	ft_lentab(t_token *token)
+char	**ll_to_char(t_env *env_list)
 {
-	int	i;
+	char	**env;
+	int		i;
+	t_env	*current;
 
+	if (!env_list)
+		return (NULL);
+	env = malloc(sizeof(char *) * (lst_size(env_list) + 1));
+	if (!env)
+		return (NULL);
+	current = env_list;
 	i = 0;
-	while (token->next)
+	while (current)
 	{
-		if (token->type == WORD)
-			i++;
-		token = token->next;
+		env[i] = ft_strdup(current->line);
+		current = current->next;
+		i++;
 	}
-	return (i);
+	env[i] = NULL;
+	return (env);
+}
+void	update_env_cpy(t_data *data)
+{
+	char	**new_env;
+
+	new_env = ll_to_char(data->env_list);
+	if (!new_env)
+		return ;
+	ft_free_split(data->env_cpy);
+	data->env_cpy = new_env;
+}
+
+void	add_env(t_data *data, char *line)
+{
+	t_env	*new_node;
+	t_env	*current;
+
+	new_node = malloc(sizeof(t_env));
+	if (!new_node)
+		return ;
+	new_node->line = ft_strdup(line);
+	new_node->next = NULL;
+	if (!data->env_list)
+	{
+		data->env_list = new_node;
+		return ;
+	}
+	current = data->env_list;
+	while (current->next)
+		current = current->next;
+	current->next = new_node;
 }

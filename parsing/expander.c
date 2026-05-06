@@ -6,7 +6,7 @@
 /*   By: ecardoua <ecardoua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/09 14:54:43 by ecardoua          #+#    #+#             */
-/*   Updated: 2026/04/22 14:20:17 by ecardoua         ###   ########.fr       */
+/*   Updated: 2026/05/06 10:08:11 by ecardoua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,8 +75,6 @@ int	size_malloc_expand(char *s, t_env *env)
 			}
 			tmp = expand;
 			expand = ft_strjoin(tmp, ft_env_search(variable, env));
-			// (void)env;
-			// expand = ft_strjoin(tmp, getenv(variable));
 			free(tmp);
 			if (!expand)
 				return (-1);
@@ -85,7 +83,6 @@ int	size_malloc_expand(char *s, t_env *env)
 		else
 			i++;
 	}
-	//free(variable);
 	return (i);
 }
 
@@ -106,6 +103,8 @@ char	*ft_expand_strdup(char *s, t_env *env)
 	s_quote = 0;
 	d_quote = 0;
 	k = 0;
+	// printf("%d\n", size_malloc_expand(s, env));
+	// return ("rien");
 	new_str = malloc(size_malloc_expand(s, env) * sizeof(char));
 	if (!new_str)
 		return (NULL);
@@ -214,16 +213,12 @@ bool	expander(t_cmd **cmd, t_token *token, t_data *data)
 {
 	char	**tmp;
 	t_env	*env;
-	// int		i;
 
-	// i = 0;
 	env = data->env_list;
 	tmp = ft_cpytab((*cmd)->args, token, env, false);
 	if (!tmp)
 		return (true);
 	free((*cmd)->args);
 	(*cmd)->args = tmp;
-	// while (tmp[i])
-	// 	printf("new_tab:%s\n", tmp[i++]);
 	return (false);
 }

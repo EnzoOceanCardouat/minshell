@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ecardoua <ecardoua@student.42.fr>          +#+  +:+       +#+        */
+/*   By: thcotza <thcotza@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/27 04:15:12 by thcotza           #+#    #+#             */
-/*   Updated: 2026/04/22 11:11:19 by ecardoua         ###   ########.fr       */
+/*   Updated: 2026/04/09 20:29:54 by thcotza          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int	num_of_args(char **args)
 
 void	ft_export(t_data *data, t_cmd **cmd)
 {
-	int		i;
+	int 	i;
 	int		n;
 	t_env	*current;
 
@@ -43,9 +43,11 @@ void	ft_export(t_data *data, t_cmd **cmd)
 	{
 		while (i < n)
 		{
-			//add_env(data, (*cmd)->args[i]);
-			//update_env_cpy(data);
+			add_env(data, (*cmd)->args[i]);
+			update_env_cpy(data);
 			i++;
 		}
 	}
 }
+
+//fonctionne ?

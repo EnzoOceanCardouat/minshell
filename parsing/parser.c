@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parsing.c                                          :+:      :+:    :+:   */
+/*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ecardoua <ecardoua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 14:05:13 by ecardoua          #+#    #+#             */
-/*   Updated: 2026/04/20 13:01:36 by ecardoua         ###   ########.fr       */
+/*   Updated: 2026/05/06 14:23:59 by ecardoua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ static t_cmd	*create_cmd(void)
 {
 	t_cmd	*new;
 
-	new = malloc(sizeof(t_cmd));
+	new = ft_calloc(1, sizeof(t_cmd));
 	if (!new)
 		return (NULL);
 	new->cmd = NULL;
@@ -41,22 +41,18 @@ static t_cmd	*create_cmd(void)
 	return (new);
 }
 
-bool	parser(t_token *token, t_cmd **cmd, t_data *data)
+bool	parser(t_token *token, t_cmd **cmd)
 {
 	t_cmd	*current;
-	int		arg_i;
+	int		i;
 	int		word_count;
 
-	(void)data;
+	i = 0;
 	if (!token)
 		return (true);
+	*cmd = create_cmd();
 	current = *cmd;
-	current->cmd = NULL;
-	current->args = NULL;
-	current->infile = -1;
-	current->outfile = -1;
-	current->next = NULL;
-	while (token)
+	while (token->next)
 	{
 		if (token->type == PIPE)
 		{
@@ -72,21 +68,26 @@ bool	parser(t_token *token, t_cmd **cmd, t_data *data)
 			if (!current->cmd)
 			{
 				current->cmd = ft_strdup(token->value);
+				if (!current->cmd)
+					return (true);
 				word_count = count_cmd_words(token) - 1;
 				if (word_count < 0)
 					word_count = 0;
 				current->args = malloc(sizeof(char *) * (word_count + 1));
 				if (!current->args)
 					return (true);
-				arg_i = 0;
 			}
 			else
-				current->args[arg_i++] = ft_strdup(token->value);
+			{
+				current->args[i++] = ft_strdup(token->value);
+				if (!current->args[i -1])
+					return (true);
 			}
 		token = token->next;
+		}
 	}
 	if (current->args)
-		current->args[arg_i] = NULL;
+		current->args[i] = NULL;
 	else
 	{
 		current->args = malloc(sizeof(char *) * 1);
@@ -94,6 +95,7 @@ bool	parser(t_token *token, t_cmd **cmd, t_data *data)
 			return (true);
 		current->args[0] = NULL;
 	}
+	*cmd = current;
 	return (false);
 }
 

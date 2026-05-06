@@ -6,7 +6,7 @@
 /*   By: ecardoua <ecardoua@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 15:39:14 by thcotza           #+#    #+#             */
-/*   Updated: 2026/04/27 14:07:25 by ecardoua         ###   ########.fr       */
+/*   Updated: 2026/05/06 10:14:27 by ecardoua         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -198,11 +198,12 @@ bool	quote_del(t_cmd **cmd, t_token *token, t_data *data)
 
 bool	parse_input(t_data *data, t_token **token, t_cmd **cmd)
 {
+
 	if (!(*token))
 		return (true);
 	if (lexer(data->input, token, &data))
 		return (true);
-	if (parser(*token, cmd, data))
+	if (parser(*token, cmd))
 		return (true);
 	if (expander(cmd, *token, data))
 		return (true);
