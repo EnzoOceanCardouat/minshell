@@ -68,7 +68,7 @@ bool	parser(t_token *token, t_cmd **cmd)
 		return (true);
 	*cmd = create_node_cmd();
 	cur_cmd = *cmd;
-	cur_cmd->args = ft_calloc(count_cmd_words(token) + 3, sizeof(char *));
+	cur_cmd->args = ft_calloc(count_cmd_words(token) + 1, sizeof(char *));
 	if (!cur_cmd->args)
 		return (true);
 	i = 0;
