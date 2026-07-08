@@ -16,7 +16,7 @@ int	count_cmd_words(t_token *token)
 {
 	int	count;
 
-	count = 0;
+	count = 1;
 	while (token->value && token->type != PIPE)
 	{
 		if (token->type == WORD)
